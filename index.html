@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AMOURA</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;cursor:none}
+body{background:#020509;color:#8aa4c4;font-family:'Geist','Inter',-apple-system,sans-serif;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+#dot{position:fixed;width:6px;height:6px;background:#3b82f6;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .1s,height .1s}
+#ring{position:fixed;width:28px;height:28px;border:1px solid rgba(59,130,246,.25);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .15s,height .15s,border-color .15s}
+body.h #dot{width:10px;height:10px}
+body.h #ring{width:40px;height:40px;border-color:rgba(59,130,246,.45)}
+body.d #dot{width:4px;height:4px}
+body.d #ring{width:16px;height:16px}
+.page{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 24px 60px;position:relative}
+.bg{position:fixed;top:0;left:0;right:0;bottom:0;overflow:hidden;pointer-events:none}
+.bg::before{content:'';position:absolute;top:-30%;left:50%;transform:translateX(-50%);width:1200px;height:1200px;background:radial-gradient(circle,rgba(59,130,246,.06) 0%,transparent 55%)}
+.bg::after{content:'';position:absolute;bottom:-40%;left:50%;transform:translateX(-50%);width:1000px;height:1000px;background:radial-gradient(circle,rgba(37,99,235,.04) 0%,transparent 50%)}
+.logo{width:120px;height:120px;object-fit:contain;margin-bottom:32px;opacity:0;transform:scale(.85);animation:logoIn .9s cubic-bezier(.16,1,.3,1) .1s forwards;filter:drop-shadow(0 0 60px rgba(59,130,246,.15))}
+@keyframes logoIn{to{opacity:1;transform:scale(1)}}
+.title{font-size:clamp(42px,7vw,72px);font-weight:800;letter-spacing:-.05em;line-height:.92;text-align:center;color:#e0eaf6;margin-bottom:18px;opacity:0;transform:translateY(20px);animation:fadeUp .7s cubic-bezier(.16,1,.3,1) .25s forwards}
+.title span{display:block;background:linear-gradient(135deg,#3b82f6 0%,#1d4ed8 50%,#6b9cf7 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.desc{font-size:17px;text-align:center;max-width:400px;line-height:1.65;color:#5a7fa5;margin-bottom:48px;opacity:0;transform:translateY(20px);animation:fadeUp .7s cubic-bezier(.16,1,.3,1) .4s forwards}
+@keyframes fadeUp{to{opacity:1;transform:none}}
+.cta{opacity:0;transform:translateY(20px);animation:fadeUp .7s cubic-bezier(.16,1,.3,1) .55s forwards;display:flex;flex-direction:column;align-items:center;gap:12px}
+.cta-btn{display:inline-flex;align-items:center;gap:10px;background:#1d4ed8;color:#fff;font-family:inherit;font-weight:700;font-size:16px;padding:16px 36px;border-radius:12px;text-decoration:none;border:none;transition:all .2s;-webkit-user-drag:element;letter-spacing:-.02em}
+.cta-btn:hover{background:#2563eb;box-shadow:0 0 0 1px rgba(59,130,246,.3),0 4px 40px rgba(29,78,216,.4);transform:translateY(-1px)}
+.cta-btn:active{transform:scale(.97);box-shadow:none}
+.cta-btn svg{flex-shrink:0}
+.cta-sub{display:flex;gap:20px;font-size:12px;color:#3d5e80}
+.cta-sub span{display:flex;align-items:center;gap:4px}
+.cta-sub svg{opacity:.35}
+.tags{margin-top:56px;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;opacity:0;transform:translateY(16px);animation:fadeUp .7s cubic-bezier(.16,1,.3,1) .7s forwards;max-width:600px}
+.tag{padding:6px 14px;border:1px solid #0d1b2e;border-radius:8px;font-size:12px;font-weight:500;color:#5a7fa5;background:rgba(13,27,46,.5);letter-spacing:-.01em;transition:border-color .2s,color .2s}
+.tag:hover{border-color:rgba(59,130,246,.2);color:#6b9cf7}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(8px);background:#0d1b2e;border:1px solid #152238;color:#c8ddf5;font-size:13px;font-weight:500;padding:10px 18px;border-radius:10px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:300;display:flex;align-items:center;gap:7px}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast::before{content:'';width:5px;height:5px;border-radius:50%;background:#3b82f6}
+.foot{position:absolute;bottom:24px;font-size:12px;color:#283f5a;letter-spacing:.02em}
+@media(max-width:600px){
+  .tags{gap:6px}
+  .tag{padding:5px 11px;font-size:11px}
+  #dot,#ring{display:none}
+  *{cursor:auto}
+}
+</style>
+</head>
+<body>
+<div id="dot"></div>
+<div id="ring"></div>
+<div class="toast" id="toast">Copied to clipboard</div>
+<div class="bg"></div>
+<div class="page">
+  <img class="logo" src="../logo.png" alt="">
+  <div class="title">Auto-solve<br><span>every IXL.</span></div>
+  <div class="desc">Open any IXL problem. It reads the question and answers it for you — automatically.</div>
+  <div class="cta">
+    <a class="cta-btn" id="bm" href="javascript:(function(){var s=document.createElement('script');s.src='https://ixll-2bc78.web.app/solver.js?v='+Date.now();document.head.appendChild(s)})()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      Get AMOURA
+    </a>
+    <div class="cta-sub">
+      <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Click to copy</span>
+      <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>Drag to bar</span>
+    </div>
+  </div>
+  <div class="tags">
+    <div class="tag">Multiple Choice</div>
+    <div class="tag">Fill in the Blank</div>
+    <div class="tag">Math Editor</div>
+    <div class="tag">Symbol Pad</div>
+    <div class="tag">Geometry</div>
+    <div class="tag">Dropdowns</div>
+    <div class="tag">Text Area</div>
+    <div class="tag">Matching</div>
+  </div>
+  <div class="foot">AMOURA</div>
+</div>
+<script>
+const dt=document.getElementById('dot'),rn=document.getElementById('ring');
+let mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my;
+addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dt.style.left=mx+'px';dt.style.top=my+'px'});
+!function l(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;rn.style.left=rx+'px';rn.style.top=ry+'px';requestAnimationFrame(l)}();
+document.querySelectorAll('a,.tag').forEach(el=>{el.onmouseenter=()=>document.body.classList.add('h');el.onmouseleave=()=>document.body.classList.remove('h')});
+addEventListener('mousedown',()=>document.body.classList.add('d'));
+addEventListener('mouseup',()=>document.body.classList.remove('d'));
+const BM=`javascript:(function(){var s=document.createElement('script');s.src='https://ixll-2bc78.web.app/solver.js?v='+Date.now();document.head.appendChild(s)})()`;
+const toast=document.getElementById('toast');let tt;
+document.getElementById('bm').onclick=e=>{
+  e.preventDefault();
+  (navigator.clipboard?navigator.clipboard.writeText(BM):Promise.reject()).catch(()=>{const t=document.createElement('textarea');t.value=BM;t.style.cssText='position:fixed;opacity:0';document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t)});
+  toast.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove('show'),2200);
+};
+</script>
+</body>
+</html>
